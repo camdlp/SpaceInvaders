@@ -2,9 +2,16 @@
  * Juego de los invaores del espacio
    Ejercicio creado para explicar los siguientes conceptos:
     -Hilos de ejecución paralela
-    -Explicación del ArrayList
+    -ArrayList
  */
 package codigo;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import javax.swing.Timer;
 
 /**
  *
@@ -12,11 +19,54 @@ package codigo;
  */
 public class VentanaJuego extends javax.swing.JFrame {
 
+    static int ANCHOPANTALLA = 800;
+    static int ALTOPANTALLA = 600;
+
+    BufferedImage buffer = null;
+
+    /*
+    bucle animación del juego. En este caso, es un hilo de ejecución nuevo que
+    se encarga de refresacar el contenido de la pantalla
+     */
+    Timer temporizador = new Timer(10, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //TODO: código de la animación
+
+            bucleDelJuego();
+        }
+    });
+
     /**
      * Creates new form VentanaJuego
      */
     public VentanaJuego() {
         initComponents();
+        setSize(ANCHOPANTALLA, ALTOPANTALLA);
+        buffer = (BufferedImage) jPanel1.createImage(ANCHOPANTALLA, ALTOPANTALLA);
+        buffer.createGraphics();
+        //Inicio el temporizador.
+        temporizador.start();
+
+    }
+
+    private void bucleDelJuego() {
+        //El bucle de animación gobierna el redibujado de los objetos en el jPanel1
+        //Primero borro todo lo que hay en el buffer
+        Graphics2D g2 = (Graphics2D) buffer.getGraphics();
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, ANCHOPANTALLA, ALTOPANTALLA);
+        
+        
+        /*//////////////////////////////////////////////////////////////////////
+        Redibujamos cada elemento en su nueva posición en el buffer.
+        
+        
+        //////////////////////////////////////////////////////////////////////*/
+        
+        //dibujo de golpe el buffer sobre el jPanel1
+        g2 = (Graphics2D) jPanel1.getGraphics();
+        g2.drawImage(buffer, 0, 0, null);
     }
 
     /**
@@ -28,17 +78,30 @@ public class VentanaJuego extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 677, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 568, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 677, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 568, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -80,5 +143,6 @@ public class VentanaJuego extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
