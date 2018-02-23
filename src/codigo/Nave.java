@@ -19,14 +19,16 @@ public class Nave {
     
     private boolean pulsadoIzquierda = false;
     private boolean pulsadoDerecha = false;
+    private int anchoPantalla;
 
-    public Nave() {
+    public Nave(int _anchoPantalla) {
         try {
             imagen = ImageIO.read(getClass().getResource("/imagenes/nave.png"));
         }
         catch (IOException ramon){
             
         }
+        anchoPantalla = _anchoPantalla;
     }
 
     public boolean isPulsadoIzquierda() {
@@ -47,8 +49,13 @@ public class Nave {
     
     //Método para mover la nave
     public void mueve(){
+        
         if(pulsadoIzquierda && x > 0){
-            x--;
+            x-=3;
+        }
+        
+        if(pulsadoDerecha && x < anchoPantalla - imagen.getWidth(null)){
+            x+=3;
         }
         
         //TODO falta mover a la derecha
