@@ -3,6 +3,10 @@
    Ejercicio creado para explicar los siguientes conceptos:
     -Hilos de ejecución paralela
     -ArrayList
+
+ * TODO
+    -Crear un sistema para almacenar todos los marcianos --> Array de dos dimensiones
+    -Crear un sistema de choques disparo-marciano --> chequeaColision
  */
 package codigo;
 
@@ -23,10 +27,21 @@ public class VentanaJuego extends javax.swing.JFrame {
     static int ANCHOPANTALLA = 800;
     static int ALTOPANTALLA = 600;
 
+    //Estructura del array de marcianos
+    int filasMarcianos = 5;
+    int columnasMarcianos = 10;
+
     BufferedImage buffer = null;
     int contador = 0;
     Nave miNave = new Nave(ANCHOPANTALLA);
     Disparo miDisparo = new Disparo(ALTOPANTALLA);
+    Marciano miMarciano = new Marciano(ANCHOPANTALLA);
+
+    //el array de dos dimensiones que guarda la lista de marcianos.
+    Marciano[][] listaMarcianos = new Marciano[filasMarcianos][columnasMarcianos];
+    
+    //dirección en la que se mueve el grupo de marcianos.
+    boolean direccionMarcianos = false;
 
     /*
     bucle animación del juego. En este caso, es un hilo de ejecución nuevo que
@@ -51,8 +66,43 @@ public class VentanaJuego extends javax.swing.JFrame {
         buffer.createGraphics();
         miNave.x = ANCHOPANTALLA / 2 - miNave.imagen.getWidth(this) / 2;
         miNave.y = ALTOPANTALLA - miNave.imagen.getHeight(this) - 40;
+
+        //creamos el array de marcianos
+        for (int i = 0; i < filasMarcianos; i++) {
+            for (int j = 0; j < columnasMarcianos; j++) {
+                listaMarcianos[i][j] = new Marciano(ANCHOPANTALLA);
+                listaMarcianos[i][j].x = j * (10+listaMarcianos[i][j].imagen.getWidth(null));
+                listaMarcianos[i][j].y = i * (17+listaMarcianos[i][j].imagen.getHeight(null));
+            }
+        }
+
         //Inicio el temporizador.
         temporizador.start();
+
+    }
+
+    private void pintaMarcianos(Graphics2D g2) {
+        for (int i = 0; i < filasMarcianos; i++) {
+            for (int j = 0; j < columnasMarcianos; j++) {
+                listaMarcianos[i][j].mueve(direccionMarcianos);
+                if (contador < 50) {
+                    g2.drawImage(listaMarcianos[i][j].imagen, listaMarcianos[i][j].x, listaMarcianos[i][j].y, null);
+                } else if (contador < 100) {
+                    g2.drawImage(listaMarcianos[i][j].imagen2, listaMarcianos[i][j].x, listaMarcianos[i][j].y, null);
+                } else {
+                    contador = 0;
+                }
+                if (listaMarcianos[i][j].x == ANCHOPANTALLA - listaMarcianos[i][j].imagen.getWidth(null) || listaMarcianos[i][j].x == 0) {
+                    direccionMarcianos = !direccionMarcianos;
+                    for(int k = 0; k < filasMarcianos; k++){
+                        for(int m = 0; m < columnasMarcianos; m++){
+                            listaMarcianos[k][m].y += listaMarcianos[k][m].imagen.getHeight(null);
+                        }
+                    }
+                    
+                }
+            }
+        }
 
     }
 
@@ -65,7 +115,7 @@ public class VentanaJuego extends javax.swing.JFrame {
 
         ////////////////////////////////////////////////////////////////////////
         //Redibujamos cada elemento en su nueva posición en el buffer.
-        //contador++;
+        contador++;
         miDisparo.mueve();
         g2.drawImage(miDisparo.imagen, miDisparo.getX(), miDisparo.getY(), null);
 
@@ -73,6 +123,21 @@ public class VentanaJuego extends javax.swing.JFrame {
         miNave.mueve();
         g2.drawImage(miNave.imagen, miNave.x, miNave.y, null);
 
+        pintaMarcianos(g2);
+
+        //pinto el marciano
+//        miMarciano.mueve();
+//        if (contador < 50) {
+//            g2.drawImage(miMarciano.imagen, miMarciano.x, miMarciano.y, null);
+//        } else if (contador < 100) {
+//            g2.drawImage(miMarciano.imagen2, miMarciano.x, miMarciano.y, null);
+//        } else {
+//            contador = 0;
+//        }
+//        if(miMarciano.x == ANCHOPANTALLA - miMarciano.imagen.getWidth(null) || miMarciano.x == 0){
+//            miMarciano.direccion = !miMarciano.direccion;
+//            miMarciano.y += miMarciano.imagen.getHeight(null);
+//        }
         ////////////////////////////////////////////////////////////////////////
         //dibujo de golpe el buffer sobre el jPanel1
         g2 = (Graphics2D) jPanel1.getGraphics();
@@ -129,18 +194,28 @@ public class VentanaJuego extends javax.swing.JFrame {
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         switch (evt.getKeyCode()) {
-            case KeyEvent.VK_LEFT: miNave.setPulsadoIzquierda(true); break;
-            case KeyEvent.VK_RIGHT: miNave.setPulsadoDerecha(true); break;
-            case KeyEvent.VK_SPACE: miDisparo.setDisparado(true); 
-            miDisparo.posicionaDisparo(miNave); break;
+            case KeyEvent.VK_LEFT:
+                miNave.setPulsadoIzquierda(true);
+                break;
+            case KeyEvent.VK_RIGHT:
+                miNave.setPulsadoDerecha(true);
+                break;
+            case KeyEvent.VK_SPACE:
+                miDisparo.setDisparado(true);
+                miDisparo.posicionaDisparo(miNave);
+                break;
         }
     }//GEN-LAST:event_formKeyPressed
 
     private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
         switch (evt.getKeyCode()) {
-            case KeyEvent.VK_LEFT: miNave.setPulsadoIzquierda(false); break;
-            case KeyEvent.VK_RIGHT: miNave.setPulsadoDerecha(false); break;
-           
+            case KeyEvent.VK_LEFT:
+                miNave.setPulsadoIzquierda(false);
+                break;
+            case KeyEvent.VK_RIGHT:
+                miNave.setPulsadoDerecha(false);
+                break;
+
         }
     }//GEN-LAST:event_formKeyReleased
 
