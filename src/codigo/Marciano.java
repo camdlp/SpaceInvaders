@@ -20,6 +20,8 @@ public class Marciano {
     
     private int anchoPantalla;
     
+    public boolean vida = true;
+    
     public Marciano(int _anchoPantalla) {
         try {
             imagen = ImageIO.read(getClass().getResource("/imagenes/marcianito1.png"));
