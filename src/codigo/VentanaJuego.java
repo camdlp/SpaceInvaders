@@ -116,16 +116,19 @@ public class VentanaJuego extends javax.swing.JFrame {
         rectanguloDisparo.setFrame(miDisparo.getX(), miDisparo.getY(), miDisparo.imagen.getWidth(null), miDisparo.imagen.getHeight(null));
         for (int i = 0; i < filasMarcianos; i++) {
             for (int j = 0; j < columnasMarcianos; j++) {
-                rectanguloMarciano.setFrame(listaMarcianos[i][j].x, listaMarcianos[i][j].y, listaMarcianos[i][j].imagen.getWidth(null),
-                        listaMarcianos[i][j].imagen.getHeight(null));
-                if (rectanguloDisparo.intersects(rectanguloMarciano) == true) {
-                    //si esto es true es que los dos rectangulos han chocado en algun punto
-                    listaMarcianos[i][j].vida = false;
+                if (listaMarcianos[i][j].vida) {
+                    rectanguloMarciano.setFrame(listaMarcianos[i][j].x, listaMarcianos[i][j].y, listaMarcianos[i][j].imagen.getWidth(null),
+                            listaMarcianos[i][j].imagen.getHeight(null));
+                    if (rectanguloDisparo.intersects(rectanguloMarciano) == true) {
+                        //si esto es true es que los dos rectangulos han chocado en algun punto
+                        listaMarcianos[i][j].vida = false;
 
-                    //recolocamos al marciano y al disparo muy por debajo en la pantalla
-                    miDisparo.setY(2000);
-                    miDisparo.setDisparado(false);
+                        //recolocamos al marciano y al disparo muy por debajo en la pantalla
+                        miDisparo.setY(2000);
+                        miDisparo.setDisparado(false);
+                    }
                 }
+
             }
         }
     }
